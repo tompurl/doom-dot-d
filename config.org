@@ -1,0 +1,144 @@
+#+TITLE: Emacs Init
+
+* Bootstrap DOOM Stuff
+#+BEGIN_SRC emacs-lisp
+(setq user-full-name "Tom Purl"
+      user-mail-address "tom@tompurl.com")
+
+(setq doom-theme 'doom-fairy-floss)
+(setq org-directory "~/gtd/org")
+(setq display-line-numbers-type t)
+#+END_SRC
+* Eye Candy
+** Fonts
+#+BEGIN_SRC emacs-lisp
+(setq doom-font (font-spec :family "Hack" :size 15)
+      doom-variable-pitch-font (font-spec :family "Ubuntu" :size 15))
+(after! doom-themes
+  (setq doom-themes-enable-bold t
+        doom-themes-enable-italic t))
+#+END_SRC
+
+* ORG !!!
+** Keymaps
+#+BEGIN_SRC emacs-lisp
+  (define-key global-map "\C-cl" 'org-store-link)
+  (define-key global-map "\C-ca" 'org-agenda)
+  (global-set-key (kbd "<f4>") 'set-org-agenda-files)
+  (add-hook 'org-mode-hook
+            (lambda ()
+              (local-set-key (kbd "<f5>") #'org-toggle-inline-images)
+              (local-set-key (kbd "C-c n s") #'org-narrow-to-subtree)
+              (local-set-key (kbd "C-c w") #'widen)))
+  (define-key global-map "\C-cc" 'org-capture)
+  (global-set-key (kbd "C-c h") 'open-org-html-file-in-browser)
+  (global-set-key (kbd "<f6>") (lambda() (interactive)(org-publish-current-file)))
+#+END_SRC
+** Navigation
+*** Open links in the same window, from here:
+
+- http://stackoverflow.com/a/13075322
+
+#+BEGIN_SRC emacs-lisp
+  (setq org-link-frame-setup (quote ((vm . vm-visit-folder-other-frame)
+                                     (vm-imap . vm-visit-imap-folder-other-frame)
+                                     (gnus . org-gnus-no-new-news)
+                                     (file . find-file)
+                                     (wl . wl-other-frame))))
+#+END_SRC
+*** Jump to a task's LOGBOOK
+    #+BEGIN_SRC emacs-lisp
+      (fset 'tp/org/jump-to-logbook
+            (lambda (&optional arg)
+              "Keyboard macro."
+              (interactive "p")
+              (kmacro-exec-ring-item (quote ([19 108 111 103 98 return] 0 "%d")) arg)))
+      (global-set-key (kbd "\C-ck") 'tp/org/jump-to-logbook)
+    #+END_SRC
+*** Move the last bullet in a sublist to the top of a sublist
+
+    I admit that this is a bit hacky because it requires the following:
+
+    1. Your mouse pointer has to be on the parent bullet of the sub-list.
+    2. The parent bullet needs another bullet at the same level beneath it.
+
+    However, it works really well for the intended purpose, which is taking sub-bullets
+    created by a capture template and moving them to the top of a sub-list.
+    #+BEGIN_SRC emacs-lisp
+      (defun tp/org/move-last-subbullet-to-top-of-sublist ()
+        "Move the last sub-bullet to the top of the list of sub-bullets."
+        (interactive)
+        (org-forward-heading-same-level 1)
+        (forward-line -1)
+        (kill-visual-line 1)
+        (org-backward-heading-same-level 1)
+        (forward-line 1)
+        (org-yank)
+        (forward-line -1))
+    #+END_SRC
+** Org-agenda
+*** Specify the files that can be used in an agenda
+
+#+BEGIN_SRC emacs-lisp
+  (defun set-org-agenda-files ()
+    (interactive)
+    (message "Saving all org buffers to keep agenda files list clean")
+    (org-save-all-org-buffers)
+    (setq org-agenda-files (list org-directory (concat org-directory "journal")))
+    (message "Done setting org agenda files."))
+
+  (set-org-agenda-files)
+#+END_SRC
+*** Custom Views
+
+Here's my custom agenda view that uses "column view".
+
+#+BEGIN_SRC emacs-lisp
+  (setq org-agenda-overriding-columns-format
+        "%TODO %4PRIORITY(Pri.) %50ITEM(Task) %4POM_Estimate(Est.) %7POM_Pomodori(Poms) %12CLOCKSUM_T(Today's Time)")
+  (setq org-agenda-view-columns-initially t)
+  (setq org-agenda-custom-commands
+        '(("p" "Pomodoro View"
+           ((tags "+today")))
+          ("c" "Daily Checklist"
+           ((org-ql-block '(and (todo)
+                                (tags "daily_checklist")
+                                (scheduled :to today))
+                          ((org-ql-block-header "Daily Checklist")))))
+          ("A" "Remaining Agenda"
+           ((org-ql-block '(and (todo "TODO")
+                                (not (or (tags "today")
+                                         (tags "daily_checklist")))
+                                (or
+                                 (scheduled :to today)
+                                 (deadline auto)))
+                          ((org-ql-block-header "Remaining Agenda")))))
+          ))
+#+END_SRC
+
+This only shows today's tasks in the agenda view by default:
+
+#+BEGIN_SRC emacs-lisp
+  (setq org-agenda-span 1)
+#+END_SRC
+
+Finally, this appears to be necessary to get the =clocksum= functions
+to run properly on startup:
+
+#+BEGIN_SRC emacs-lisp
+(org-clock-sum)
+#+END_SRC
+
+** Org-Clock
+   Set your default parameters for clock reports when they are viewed i the agenda view:
+
+#+BEGIN_SRC emacs-lisp
+  (setq org-agenda-clockreport-parameter-plist
+        '(:scope agenda-with-archives :formula % :maxlevel 10 :tags t :fileskip0 t :compact t :narrow 60 :score 0))
+#+END_SRC
+
+   If I'm idle for more than X minutes then ask me what to do with the clock time:
+
+   #+BEGIN_SRC emacs-lisp
+     (setq org-clock-idle-time 15)
+   #+END_SRC
