@@ -12,13 +12,14 @@
 * Eye Candy
 ** Fonts
 #+BEGIN_SRC emacs-lisp
-(setq doom-font (font-spec :family "Hack" :size 15)
-      ;; doom-variable-pitch-font (font-spec :family "InconsolataNerdFontRegular" :size 15)
+(setq doom-font (font-spec :family "Hack" :size 18)
+      doom-variable-pitch-font (font-spec :family "Roboto" :size 18)
       )
 (after! doom-themes
   (setq doom-themes-enable-bold t
         doom-themes-enable-italic t))
 #+END_SRC
+
 ** Doom Banner
 #+BEGIN_SRC emacs-lisp
 (setq +doom-dashboard-banner-dir "/home/tom/.doom.d/banners")
