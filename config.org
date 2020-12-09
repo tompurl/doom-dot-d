@@ -90,7 +90,10 @@
     (interactive)
     (message "Saving all org buffers to keep agenda files list clean")
     ;; (org-save-all-org-buffers)
-    (setq org-agenda-files (list org-directory (concat org-directory "journal")))
+    ;; (setq org-agenda-files (list org-directory (concat org-directory "journal")))
+    (setq org-agenda-files (list
+                            (concat org-directory "/" "RecurringTasks.org")
+                            (concat org-directory "/" "inbox.org")))
     (message "Done setting org agenda files."))
 
   (set-org-agenda-files)
