@@ -22,7 +22,7 @@
        :completion
        company           ; the ultimate code completion backend
        helm              ; the *other* search engine for love and life
-       ;;ido               ; the other *other* search engine...
+       ;; ido               ; the other *other* search engine...
        ;;ivy               ; a search engine for love and life
 
        :ui
@@ -146,7 +146,11 @@
        ;;nim               ; python + lisp at the speed of c
        nix               ; I hereby declare "nix geht mehr!"
        ;;ocaml             ; an objective camel
-       org               ; organize your plain life in plain text
+       (org               ; organize your plain life in plain text
+        +pretty
+        +roam
+        +hugo
+        +present)
        ;;php               ; perl's insecure younger brother
        ;;plantuml          ; diagrams for confusing people more
        ;;purescript        ; javascript, but functional
@@ -167,6 +171,9 @@
        ;;terra             ; Earth and Moon in alignment for performance.
        web               ; the tubes
        yaml              ; JSON, but readable
+       clojure
+       groovy
+       wgrep
 
        :email
        ;;(mu4e +gmail)

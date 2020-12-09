@@ -12,6 +12,21 @@
 (package! nyan-mode)
 (package! presentation)
 (package! org-ql)
+(package! ox-gfm)
+(package! org-roam)
+(package! exec-path-from-shell)
+(package! powershell-mode)
+(package! robot-mode)
+(package! paredit)
+(package! plantuml-mode)
+(package! shx)
+(package! helm-org-rifle)
+(package! dired-rsync)
+(package! try)
+(package! nov)
+(package! org-noter)
+(package! bongo)   ;; media player
+(package! ag)
 
 ;; To install a package directly from a remote git repo, you must specify a
 ;; `:recipe'. You'll find documentation on what `:recipe' accepts here:

@@ -13,7 +13,8 @@
 ** Fonts
 #+BEGIN_SRC emacs-lisp
 (setq doom-font (font-spec :family "Hack" :size 15)
-      doom-variable-pitch-font (font-spec :family "Ubuntu" :size 15))
+      ;; doom-variable-pitch-font (font-spec :family "InconsolataNerdFontRegular" :size 15)
+      )
 (after! doom-themes
   (setq doom-themes-enable-bold t
         doom-themes-enable-italic t))
@@ -83,7 +84,7 @@
   (defun set-org-agenda-files ()
     (interactive)
     (message "Saving all org buffers to keep agenda files list clean")
-    (org-save-all-org-buffers)
+    ;; (org-save-all-org-buffers)
     (setq org-agenda-files (list org-directory (concat org-directory "journal")))
     (message "Done setting org agenda files."))
 
@@ -122,13 +123,6 @@ This only shows today's tasks in the agenda view by default:
   (setq org-agenda-span 1)
 #+END_SRC
 
-Finally, this appears to be necessary to get the =clocksum= functions
-to run properly on startup:
-
-#+BEGIN_SRC emacs-lisp
-(org-clock-sum)
-#+END_SRC
-
 ** Org-Clock
    Set your default parameters for clock reports when they are viewed i the agenda view:
 
@@ -142,3 +136,658 @@ to run properly on startup:
    #+BEGIN_SRC emacs-lisp
      (setq org-clock-idle-time 15)
    #+END_SRC
+
+** Org-capture
+*** Templates
+#+BEGIN_SRC emacs-lisp
+  (setq org-capture-templates
+        '(
+          ("t" "Todo" entry (file+headline (lambda () (concat org-directory "inbox.org")) "In-Process") "* TODO %? %^g")
+          ("w" "Work Log" entry (file+headline (lambda () (concat org-directory "/WorkLogs.org")) "On-Deck") "** %(create-org-link 1) %?")
+          ("d" "Daily Review" entry (file+headline (lambda () (concat org-directory "/Personal_Reviews.org")) "Daily") "** %(create-org-link 1 \"Daily Review\") %?")
+          ("k" "Weekly Review" entry (file+headline (lambda () (concat org-directory "/Personal_Reviews.org")) "Weekly") "** %(create-org-link 1 \"Weekly Review\") %?")
+          ("s" "Start of Week Check-In" entry (file+headline (lambda () (concat org-directory "/Personal_Reviews.org")) "Weekly") "** %(create-org-link 1 \"Start of Week Check-In\") %?")
+          ("r" "Research Note" entry (file+headline (lambda () (concat org-directory "/ResearchNotes.org")) "In-Process") "** %(create-org-link nil) %?")
+          ("l" "Lessons Learned" entry (file+headline (lambda () (concat org-directory "/LessonsLearned.org")) "Drafts") "** %(create-org-link nil) %?")
+          ("m" "Meeting Minute" entry (file+headline (lambda () (concat org-directory "/MeetingMinutes.org")) "In-Process") "** %(create-org-link 1) %?")
+          ))
+#+END_SRC
+
+** To-do Lists
+*** Workflow States
+
+#+BEGIN_SRC emacs-lisp
+  (setq org-todo-keywords
+        '((sequence "TODO(t)" "WAIT(w@/!)" "|" "DONE(d!)" "CANCELED(c@)")))
+#+END_SRC
+*** Misc Props
+Have org measure todo completion percentage recursively. =nil= means
+that you want it to look recursively.
+
+#+BEGIN_SRC emacs-lisp
+  (setq org-hierarchical-todo-statistics nil)
+#+END_SRC
+
+** Functions
+**** Calculating Dates
+#+BEGIN_SRC emacs-lisp
+  (defvar org-link-date-stamp-format "%y%m%d"
+    "Format of date stamps to use in Org links")
+
+  (defun add-date-stamp-to-file-name (org-link)
+    "Add a date stamp to the file name portion of an org link"
+    (replace-regexp-in-string ":"
+                              (concat ":"
+                                      (format-time-string org-link-date-stamp-format (current-time))
+                                      "-") org-link))
+
+  (defun add-date-stamp-to-link-title (org-link)
+    "Add a date stamp to the title portion of an org link"
+    (replace-regexp-in-string "\\]\\["
+                              (concat "]["
+                                      (format-time-string org-link-date-stamp-format (current-time))
+                                      " - ") org-link))
+#+END_SRC
+**** Misc
+
+This is just a minor utility function.
+
+#+BEGIN_SRC emacs-lisp
+  (defun escape-file-titles (title)
+    "Take an arbitrary string and replace all of the bad chars with
+    underscores"
+    (replace-regexp-in-string " " "_" title))
+#+END_SRC
+
+Here's a much better version of my create-org-link function courtesy
+of -> http://emacs.stackexchange.com/a/12166/8228
+
+#+BEGIN_SRC emacs-lisp
+  (defun create-org-link (addDate? &optional title)
+    "Takes a human-readable title for a link and returns a
+     nicely-formatted file link."
+    (interactive)
+    (unless title
+      (setq title
+            (read-string "Please enter a title: ")))
+    (let ((plain-file-link
+           (format "[[file:%s.org][%s]]" (escape-file-titles title) title)))
+      (let ((formatted-file-link
+             (if addDate?
+                 (add-date-stamp-to-file-name (add-date-stamp-to-link-title plain-file-link))
+               plain-file-link)))
+        (if (called-interactively-p)
+            (insert formatted-file-link)
+          formatted-file-link))))
+#+END_SRC
+
+**** Browser-related
+#+BEGIN_SRC emacs-lisp
+  (defun org-file-name-convert-to-html (org-file-name)
+    "Convert an org file name into its HTML eqlivalent"
+    (replace-regexp-in-string
+     "\\(.*\\)\\/org\\/\\(.*\\)\.org$"
+     "\\1/org/\\2.html" org-file-name))
+
+  (defun open-org-html-file-in-browser ()
+    "Open the current html version of the current org file in a web
+    browser."
+    (interactive)
+    (browse-url-of-file (org-file-name-convert-to-html (buffer-file-name))))
+#+END_SRC
+** Org-publish
+*** Bootstrap
+
+#+BEGIN_SRC emacs-lisp
+(require 'ox-publish)
+#+END_SRC
+
+#+RESULTS:
+: ox-publish
+
+** Yasnippet
+#+BEGIN_SRC emacs-lisp
+  (defun yas/org-very-safe-expand ()
+    (let ((yas/fallback-behavior 'return-nil)) (yas/expand)))
+
+  (add-hook 'org-mode-hook
+            (lambda ()
+              (make-variable-buffer-local 'yas/trigger-key)
+              (setq yas/trigger-key [tab])
+              (add-to-list 'org-tab-first-hook 'yas/org-very-safe-expand)
+              (define-key yas/keymap [tab] 'yas/next-field)))
+#+END_SRC
+
+** Babel
+
+Here's the languages that I can interpret. Note that there's a difference between the way that the =shell= language is loaded between older and newer versions of Emacs. This my hacky way of fixing it for now:
+
+#+BEGIN_SRC emacs-lisp
+    (cond
+     ((string-equal system-type "windows-nt")
+      (progn
+        (org-babel-do-load-languages
+         'org-babel-load-languages
+         '((js . t)
+           (emacs-lisp . t)
+           (shell . t)
+           (python . t)
+           (dot . t)
+           (plantuml . t)))))
+     ((string-equal system-type "gnu/linux")
+      (progn
+        (org-babel-do-load-languages
+         'org-babel-load-languages
+         '((js . t)
+           (emacs-lisp . t)
+           (shell . t)
+           (python . t)
+           (dot . t)
+           (plantuml . t))))))
+#+END_SRC
+
+I don't want to manually confirm that code written in the following
+languages can be executed:
+
+#+BEGIN_SRC emacs-lisp
+  (defun my-org-confirm-evaluate (lang body)
+    (and (not (string= lang "js"))
+         (not (string= lang "dot"))
+         (not (string= lang "python"))))
+
+  (setq org-confirm-babel-evaluate 'my-org-confirm-evaluate)
+#+END_SRC
+
+
+Here are my global =src= block headers. So far, all this does is
+ensure that the publishing process never executes the code in src
+block (unless it's overrided at a lower lever of course).
+
+#+BEGIN_SRC emacs-lisp
+  (setq org-babel-default-header-args
+        (cons '(:eval . "never-export")
+              (assq-delete-all :eval org-babel-default-header-args)))
+#+END_SRC
+
+** Tags
+These are the tags that I will use the most when creating new tasks.
+
+#+BEGIN_SRC emacs-lisp
+  (cond
+   ((string-equal system-type "windows-nt")
+    (progn
+      ;; Work-related tags
+      (setq org-tag-alist '(
+                            ("c_admin" . ?a)
+                            ("c_coding" . ?c)
+                            ("c_documentation" . ?d)
+                            ("goal" . ?g)
+                            ("c_hardware_troubleshooting" . ?h)
+                            ("c_training" . ?i)
+                            ("c_knowledge_transfer" . ?k)
+                            ("c_manual_testing" . ?m)
+                            ("c_monitoring" . ?n)
+                            ("c_meetings" . ?e)
+                            ("objective" . ?o)
+                            ("c_hr" . ?r)
+                            ("c_agile_process_stuff" . ?s)
+                            ("today" . ?t)
+                            ("c_system_maintenance" . ?z)))))
+   ((string-equal system-type "gnu/linux")
+    (progn
+      (setq org-tag-alist '(
+                            ("c_bills" . ?b)
+                            ("c_chore" . ?c)
+                            ("c_errand" . ?e)
+                            ("c_self_care" . ?s)
+                            ("today" . ?t))))))
+#+END_SRC
+
+Here's the tags that I exclude from tag inheritance:
+
+#+BEGIN_SRC emacs-lisp
+  (setq org-tags-exclude-from-inheritance (quote ("crypt")))
+#+END_SRC
+** Images
+   This turns on inline images at startup:
+
+   #+BEGIN_SRC emacs-lisp
+     (setq org-startup-with-inline-images t)
+   #+END_SRC
+
+   ... and this scales them down when viewing them inline:
+
+   #+BEGIN_SRC emacs-lisp
+     (setq org-image-actual-width t)
+   #+END_SRC
+** Property Help
+*** Inherited Properties
+    Here's my list of properties that can be inherited. I like to keep this small so
+    as not to adversely affect the speed of agenda searches.
+
+    #+BEGIN_SRC emacs-lisp
+      (setq org-use-property-inheritance
+            (list "FEATURE_NUM"
+                  "STORY_NUM"))
+    #+END_SRC
+* Zettelkasten
+** org-roam
+#+BEGIN_SRC emacs-lisp
+(setq org-roam-directory (concat org-directory "/roam"))
+#+END_SRC
+* Magit
+** SSH Stuff
+*** Linux
+    I nee to copy some environment variables from my shell in order to use
+    =ssh-agent=. Please note that this also makes everything else (including
+    =rsync-dired=) work with =ssh-agent= too.
+
+    TODO - Install this automatically
+
+    #+BEGIN_SRC emacs-lisp
+      (cond
+       ((string-equal system-type "gnu/linux")
+        (progn
+          (require 'exec-path-from-shell)
+          (exec-path-from-shell-copy-env "SSH_AGENT_PID")
+          (exec-path-from-shell-copy-env "SSH_AUTH_SOCK")
+          )))
+    #+END_SRC
+
+** Keymaps
+   I like having my own custom keymap for Magit.
+
+#+BEGIN_SRC emacs-lisp
+  (progn
+    (define-prefix-command 'tp/magit/key-map)
+    (define-key tp/magit/key-map (kbd "s") 'magit-status)
+    (define-key tp/magit/key-map (kbd "b") 'magit-branch-popup)
+    (define-key tp/magit/key-map (kbd "c") 'magit-checkout)
+    (define-key tp/magit/key-map (kbd "d") 'magit-diff-popup)
+    ;; Show the git log for the current file.
+    (define-key tp/magit/key-map (kbd "l") 'magit-log-buffer-file))
+  (global-set-key (kbd "\C-cm") tp/magit/key-map)
+#+END_SRC
+
+   I'm also already using =C-x gg= as a shortcut to jump to the top of a buffer, so
+   I'm not a huge fan of Magit using =C-x g= to run =magit-status=. So let's nuke
+   that:
+
+   #+BEGIN_SRC emacs-lisp
+     (global-unset-key (kbd "C-x g"))
+   #+END_SRC
+* Timestamp Stuff
+
+#+BEGIN_SRC emacs-lisp
+  (defvar current-date-time-format "%a %b %d %H:%M:%S %Z %Y"
+    "Format of date to insert with `insert-current-date-time' func
+  See help of `format-time-string' for possible replacements")
+
+  (defvar current-date-format-for-org "** %m/%d/%Y"
+    "Format of date to insert with `insert-current-date' func for org files.
+  See help of `format-time-string' for possible replacements")
+
+  (defvar current-date-format-for-links "%m-%d-%Y"
+    "This format works better for HTML links than the org format.")
+
+  (defvar current-date-format "%m/%d/%Y"
+    "Format of date to insert with `insert-current-date' func.
+  Note the weekly scope of the command's precision.")
+
+  (defvar current-time-format-for-org "*** %H:%M"
+    "Format of date to insert with `insert-current-time' func for org files.
+  Note the weekly scope of the command's precision.")
+
+  (defvar current-time-format "%H:%M:%S"
+    "Format of date to insert with `insert-current-time' func.
+  Note the weekly scope of the command's precision.")
+
+  (defvar current-time-format-no-delim "%H%M%S"
+    "Format of date with no delimiters.")
+
+  (defun insert-current-date-for-org ()
+    "insert the current date as a heading into an org file.
+  Uses `current-date-time-format' for the formatting the date/time."
+    (interactive)
+    (insert (format-time-string current-date-format-for-org (current-time)))
+    (insert "\n")
+    )
+
+  (defun insert-current-date-for-links ()
+    "Insert the current date in a way that works in HTML
+    links."
+    (interactive)
+    (insert (format-time-string current-date-format-for-links (current-time)))
+    )
+
+  (defun get-current-date-for-links ()
+    "Retrieves the current date in a way that works in HTML
+    links."
+    (interactive)
+    (format-time-string current-date-format-for-links (current-time))
+    )
+
+  (defun insert-current-date ()
+    "insert the current date into current buffer.
+  Uses `current-date-time-format' for the formatting the date/time."
+    (interactive)
+    (insert (format-time-string current-date-format (current-time)))
+    )
+
+  (defun get-current-date ()
+    "Returns the current date. Uses `current-date-time-format` for the formatting of the date/time"
+    (interactive)
+    (format-time-string current-date-format (current-time)))
+
+  (defun insert-current-time-for-org ()
+    "insert the current time as a heading into an org file."
+    (interactive)
+    (insert (format-time-string current-time-format-for-org (current-time)))
+    (insert "\n")
+    )
+
+  (defun insert-new-day-headings ()
+    "insert the 'new day' heading into an org file"
+    (interactive)
+    (insert-current-date-for-org)
+    (insert "\n")
+    (insert-current-time-for-org)
+    (insert "\n")
+    )
+
+  (defun insert-current-date-time ()
+    "insert the current date and time into current buffer.
+  Uses `current-date-time-format' for the formatting the date/time."
+    (interactive)
+    (insert "==========\n")
+					  ;       (insert (let () (comment-start)))
+    (insert (format-time-string current-date-time-format (current-time)))
+    (insert "\n")
+    )
+
+  (defun insert-current-time ()
+    "insert the current time (1-week scope) into the current buffer."
+    (interactive)
+    (insert (format-time-string current-time-format (current-time)))
+    )
+
+  (defun get-current-time ()
+    "Returns the current time (1-week scope).."
+    (interactive)
+    (format-time-string current-time-format (current-time)))
+
+  (defun get-current-time-no-delim ()
+    "Returns the current time with no delimiters."
+    (interactive)
+    (format-time-string current-time-format-no-delim (current-time)))
+
+  (global-set-key "\C-c\C-d" 'insert-current-date-time)
+  (global-set-key "\C-c\C-t" 'insert-current-time)
+#+END_SRC
+* Dev
+** Misc
+*** Projectile
+[[https://www.projectile.mx/en/latest/usage/][Projectile]] is a fantastic package that makes it easier to work within a project
+using Emacs.
+
+I'm not a huge fan of it's built-in prefix though so let's fix that:
+
+#+BEGIN_SRC emacs-lisp
+(setq projectile-completion-system 'helm)
+#+END_SRC
+
+*** Indent
+    This turns off tabs and replaces them with 4 spaces for most major
+    modes:
+
+ #+BEGIN_SRC emacs-lisp
+   (setq-default c-basic-offset 4)
+   (setq-default indent-tabs-mode nil)
+ #+END_SRC
+*** Highlighting the Current Line
+#+BEGIN_SRC emacs-lisp
+  (global-hl-line-mode)
+#+END_SRC
+*** Line numbers
+Turn them off by default
+#+BEGIN_SRC emacs-lisp
+(setq display-line-numbers-type nil)
+#+END_SRC
+** Robot Mode
+*** Bootstrap
+ #+BEGIN_SRC emacs-lisp
+   (add-to-list 'auto-mode-alist
+                '("\\.txt\\'" . robot-mode))
+   (add-to-list 'auto-mode-alist
+                '("\\.robot\\'" . robot-mode))
+ #+END_SRC
+*** Keymaps
+ #+BEGIN_SRC emacs-lisp
+   (add-hook 'robot-mode-hook
+             (lambda () (local-set-key (kbd "<f5>") #'robot-mode-find-kw)))
+ #+END_SRC
+*** Hiding =^M= Characters In Robot Files
+ #+BEGIN_SRC emacs-lisp
+   (add-hook 'robot-mode-hook 'tp/file/remove-dos-eol)
+ #+END_SRC
+** Lisp
+*** Paredit
+
+Let's just turn it on for everything :smile:
+
+  #+BEGIN_SRC emacs-lisp
+    (use-package paredit
+      :hook ((emacs-lisp-mode . enable-paredit-mode)
+             (eval-expression-minibuffer-setup . enable-paredit-mode)
+             (ielm-mode . enable-paredit-mode)
+             (lisp-mode . enable-paredit-mode)
+             (lisp-interaction-mode . enable-paredit-mode)
+             (scheme-mode . enable-paredit-mode)))
+
+  #+END_SRC
+*** Paren matching
+    These customizations make it easier to know where code blocks are.
+    #+BEGIN_SRC emacs-lisp
+      (show-paren-mode 1)
+    #+END_SRC
+* Text Search
+** Swiper and Ivy
+
+The killer feature here is using Swiper instead of incremental search when hitting C-s:
+
+#+BEGIN_SRC emacs-lisp
+(ivy-mode 1)
+(setq ivy-use-virtual-buffers t)
+(setq enable-recursive-minibuffers t)
+(global-set-key "\C-s" 'swiper)
+(global-set-key (kbd "C-c C-r") 'ivy-resume)
+(global-set-key (kbd "<f6>") 'ivy-resume)
+(define-key minibuffer-local-map (kbd "C-r") 'counsel-minibuffer-history)
+#+END_SRC
+* Web Browsing
+  Make =eww= create a new buffer if executed from a non-=eww= buffer. This allows you to
+  easily create more than one =eww= buffer. Also, I copied this from
+  https://emacs.stackexchange.com/a/24477/8228, which was copied from Xah's erogemacs tips
+  (like a lot of stuff in this file).
+
+  #+BEGIN_SRC emacs-lisp
+    ;; Auto-rename new eww buffers
+    (defun xah-rename-eww-hook ()
+      "Rename eww browser's buffer so sites open in new page."
+      (rename-buffer "eww" t))
+    (add-hook 'eww-mode-hook #'xah-rename-eww-hook)
+  #+END_SRC
+
+* Scratch Buffer
+** Saving And Restoring The Buffer
+   Also stole from EOS:
+   #+BEGIN_SRC emacs-lisp
+     (defun eos/core/save-persistent-scratch ()
+       "Write the contents of *scratch* to the file name
+     `persistent-scratch-file-name'."
+       (with-current-buffer (get-buffer-create "*scratch*")
+         (write-region (point-min) (point-max) "~/.emacs.d/persistent-scratch")))
+
+     (defun eos/core/load-persistent-scratch ()
+       "Load the contents of `persistent-scratch-file-name' into the
+       scratch buffer, clearing its contents first."
+       (interactive)
+       (if (file-exists-p "~/.emacs.d/persistent-scratch")
+           (with-current-buffer (get-buffer "*scratch*")
+             (delete-region (point-min) (point-max))
+             (insert-file-contents "~/.emacs.d/persistent-scratch"))))
+
+     (add-hook 'after-init-hook 'eos/core/load-persistent-scratch)
+     (add-hook 'kill-emacs-hook 'eos/core/save-persistent-scratch)
+   #+END_SRC
+* Syncing
+  I like to sync some of my files using Syncthing. The problem is when I do the following:
+
+  1. Edit a file on my laptop and save and sync without killing the buffer.
+  2. Edit the same file on my phone using Orgzly and sync.
+  3. Sync everything on my laptop and visit the same buffer in Emacs.
+
+  At this point I would be looking at the version of the file from step 1 on my laptop. To
+  view the step 2 updates I would need to manually revert the buffer, and chances are I
+  wouldn't know which buffers to revert.
+
+  I therefore am turning on =global-auto-revert-mode= to see if that helps.
+
+  #+BEGIN_SRC emacs-lisp
+    (global-auto-revert-mode 1)
+  #+END_SRC
+* Window Management
+** Functions
+   I just love this, it was stupid simple to write and I think I use it a least 10 times a
+   day. It "moves" the current window into a new frame.
+
+   What does that mean? Let's say you split your current window (which is called a *frame*
+   in Emacs) into 2 using =Ctrl-3= or something like that and then realize that you would
+   /really/ like to focus on the buffer in that "split" (which is called a *window* in
+   Emacs). Wouldn't it be great if you could just move it to a new frame?
+
+   #+BEGIN_SRC emacs-lisp
+     (defun tp/wm/move-window-to-new-frame ()
+       "Take the content of the current window and move it to its own
+        frame"
+       (interactive)
+       (make-frame)
+       (delete-window))
+   #+END_SRC
+* Buffer Management
+** ibuffer
+   First let's set the keystrokes:
+
+#+BEGIN_SRC emacs-lisp
+  (global-set-key (kbd "C-x C-b") 'ibuffer) ;; Use Ibuffer for Buffer List
+#+END_SRC
+
+   Next let's group buffers:
+
+   #+BEGIN_SRC emacs-lisp
+     (setq ibuffer-saved-filter-groups
+           '(("home"
+              ("emacs-config" (filename . "emacs-init.org"))
+              ("Org" (or (mode . org-mode)
+                         (filename . "OrgMode")
+                         (name . "\*Org Agenda\*")))
+              ("Dired" (or (mode . dired-mode)
+                           (name . "\*Sunrise\*")))
+              ("Dev" (or (mode . python-mode)
+                         (mode . robot-mode)))
+              ("Magit" (or (name . "\*magit")
+                           (name . "magit")
+                           (mode . magit-mode)))
+              ("EXWM" (or (mode . exwm-mode)
+                          (name . "\*EXWM\*")))
+              ("Shells" (or (mode . eshell-mode)
+                            (mode . shell-mode)
+                            (mode . comint-mode))))
+             ("eww" (or (mode . eww-mode)
+                        (mode . eww-bookmark-mode)))
+             ("Help" (or (name . "\*Help\*")
+                         (name . "\*Apropos\*")
+                         (name . "\*info\*")))))
+
+     (add-hook 'ibuffer-mode-hook
+               '(lambda ()
+                  (ibuffer-switch-to-saved-filter-groups "home")))
+
+   #+END_SRC
+* Encryption
+** GPG
+*** Easy GPG Assistant
+    This is Emac's built-in interface GPG that I like to use to transparently encrypt
+    entire files. When you use it you should put something like this at the top of
+    your file:
+
+#+BEGIN_EXAMPLE
+# -*- mode:org; epa-file-encrypt-to: ("something@tompurl.com") -*-
+#+END_EXAMPLE
+
+You can replace the email address with the public key's id.
+
+    #+BEGIN_SRC emacs-lisp
+      (require 'epa-file)
+      (epa-file-enable)
+      (setq epa-pinentry-mode 'loopback)
+    #+END_SRC
+
+    I hate to admit it but my current process for whole-file encryption goes like
+    this:
+
+    1. I add a line that looks something like this to the top of my file:
+       - =# -*- mode:org; epa-file-encrypt-to: ("5BF5A514D04978DD") -*-=
+    2. I then drop into the command line and run a command that looks something like
+       this:
+       - =gpg --output foo.org.gpg --encrypt --recipient 5BF5A514D04978DD foo.org
+    3. I then test that I can open =foo.org.gpg= in Emacs seamlessly.
+*** Org-mode
+I use this to encrypt sections of org documents. You just have to tag the
+section with =crypt=.
+
+#+BEGIN_SRC emacs-lisp
+(require 'org-crypt)
+(org-crypt-use-before-save-magic)
+(setq org-crypt-key "5BF5A514D04978DD")
+#+END_SRC
+
+* Bookmarks
+   Since I run Emacs as a user service it is unceremoniously killed every time I
+   log out of a session. My bookmarks are therefore never saved. This fixes that
+   by saving my bookmarks every time I change one.
+
+   #+BEGIN_SRC emacs-lisp
+     (setq bookmark-save-flag 1)
+   #+END_SRC
+* Server stuff
+
+#+BEGIN_SRC emacs-lisp
+(require 'server)
+(or (eq (server-running-p) t)
+    (server-start))
+#+END_SRC
+* Epub
+** nov
+#+BEGIN_SRC emacs-lisp
+ (add-to-list 'auto-mode-alist '("\\.epub\\'" . mode-nov))
+#+END_SRC
+* Multimedia
+** Macros
+*** flac2mp3
+
+It's a royal pain in a shell script to loop over a list of files using the
+shell, so here's what I do instead.
+
+1. =find . -name "*flac*" > flac.sh=
+2. Add a shebang and =set -e= to the top of =flac.sh=
+3. Execute this macro on every line after positioning the cursor in the first column.
+
+#+BEGIN_SRC emacs-lisp
+(fset 'tp/mm/flac2mp3
+      (lambda (&optional arg)
+        "Keyboard macro."
+        (interactive "p")
+        (kmacro-exec-ring-item
+         (quote ([67108896 5 134217847 1 102 102 109 112 101 103 32 45 105 32 34 5 34 32 45 97 98 32 51 50 48 107 32 45 109 97 112 95 109 101 116 97 100 97 116 97 32 48 32 45 105 100 118 backspace 51 118 50 95 118 101 114 115 105 111 110 32 51 32 34 25 backspace backspace backspace backspace 109 112 51 34 14 1] 0 "%d")) arg)))
+#+END_SRC
