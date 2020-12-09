@@ -542,6 +542,11 @@ I'm not a huge fan of it's built-in prefix though so let's fix that:
 
 #+BEGIN_SRC emacs-lisp
 (setq projectile-completion-system 'helm)
+(setq projectile-keymap-prefix (kbd "C-c p"))
+(setq projectile-globally-ignored-directories
+      (append '(".git" ".pytest_cache" ".vscode" "Output" "venv" "venv3" "node_modules")))
+(setq projectile-globally-ignored-files
+      (append '("*~" "*#" "log.html" "output.xml" "report.html")))
 #+END_SRC
 
 *** Indent
