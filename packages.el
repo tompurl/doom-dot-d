@@ -18,7 +18,6 @@
 (package! powershell-mode)
 (package! robot-mode)
 (package! paredit)
-(package! plantuml-mode)
 (package! shx)
 (package! helm-org-rifle)
 (package! dired-rsync)
