@@ -5,7 +5,10 @@
 (setq user-full-name "Tom Purl"
       user-mail-address "tom@tompurl.com")
 
-(setq doom-theme 'doom-fairy-floss)
+(setq doom-theme
+      ;; 'doom-fairy-floss ;; Really nice purplish theme
+      'kaolin-valley-light ;; Nice, light theme that's a lot like solarized but more green'
+      )
 (setq org-directory "~/gtd/org")
 (setq display-line-numbers-type t)
 #+END_SRC
