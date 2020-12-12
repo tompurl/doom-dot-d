@@ -807,3 +807,15 @@ shell, so here's what I do instead.
         (kmacro-exec-ring-item
          (quote ([67108896 5 134217847 1 102 102 109 112 101 103 32 45 105 32 34 5 34 32 45 97 98 32 51 50 48 107 32 45 109 97 112 95 109 101 116 97 100 97 116 97 32 48 32 45 105 100 118 backspace 51 118 50 95 118 101 114 115 105 111 110 32 51 32 34 25 backspace backspace backspace backspace 109 112 51 34 14 1] 0 "%d")) arg)))
 #+END_SRC
+
+* Registers
+** Org
+#+BEGIN_SRC emacs-lisp
+  (set-register ?w (cons 'file (concat org-directory "/WorkLogs.org")))
+  (set-register ?i (cons 'file (concat org-directory "/index.org")))
+  (set-register ?j (cons 'file (concat org-directory "/journal/" (format-time-string "%Y%m%d") ".org")))
+#+END_SRC
+** Misc
+#+BEGIN_SRC emacs-lisp
+  (set-register ?e (cons 'file "~/.doom.d/config.org"))
+#+END_SRC
