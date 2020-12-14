@@ -1,9 +1,10 @@
 # -*- mode: snippet -*-
 # name: Start Of Week Check-In
 # key: sow
-# --
+# expand-env: ((yas-indent-line 'fixed) (yas-wrap-around-region 'nil))
+# --n
 Start of Week Check-In
-*** My #1 Priority This Week Is:
+`(make-string (org-current-level) ?*)` My #1 Priority This Week Is:
     $0
 *** I Want to Do Less:
 
