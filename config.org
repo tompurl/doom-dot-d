@@ -92,8 +92,6 @@
   (defun set-org-agenda-files ()
     (interactive)
     (message "Saving all org buffers to keep agenda files list clean")
-    ;; (org-save-all-org-buffers)
-    ;; (setq org-agenda-files (list org-directory (concat org-directory "journal")))
     (setq org-agenda-files (list
                             (concat org-directory "/" "RecurringTasks.org")
                             (concat org-directory "/" "inbox.org")))
@@ -151,17 +149,17 @@ This only shows today's tasks in the agenda view by default:
 ** Org-capture
 *** Templates
 #+BEGIN_SRC emacs-lisp
-  (setq org-capture-templates
-        '(
-          ("t" "Todo" entry (file+headline (lambda () (concat org-directory "inbox.org")) "In-Process") "* TODO %? %^g")
-          ("w" "Work Log" entry (file+headline (lambda () (concat org-directory "/WorkLogs.org")) "On-Deck") "** %(create-org-link 1) %?")
-          ("d" "Daily Review" entry (file+headline (lambda () (concat org-directory "/Personal_Reviews.org")) "Daily") "** %(create-org-link 1 \"Daily Review\") %?")
-          ("k" "Weekly Review" entry (file+headline (lambda () (concat org-directory "/Personal_Reviews.org")) "Weekly") "** %(create-org-link 1 \"Weekly Review\") %?")
-          ("s" "Start of Week Check-In" entry (file+headline (lambda () (concat org-directory "/Personal_Reviews.org")) "Weekly") "** %(create-org-link 1 \"Start of Week Check-In\") %?")
-          ("r" "Research Note" entry (file+headline (lambda () (concat org-directory "/ResearchNotes.org")) "In-Process") "** %(create-org-link nil) %?")
-          ("l" "Lessons Learned" entry (file+headline (lambda () (concat org-directory "/LessonsLearned.org")) "Drafts") "** %(create-org-link nil) %?")
-          ("m" "Meeting Minute" entry (file+headline (lambda () (concat org-directory "/MeetingMinutes.org")) "In-Process") "** %(create-org-link 1) %?")
-          ))
+(setq org-capture-templates
+      '(
+        ("t" "Todo" entry (file+headline (lambda () (concat org-directory "/" "inbox.org")) "In-Process") "* TODO %? %^g")
+        ("w" "Work Log" entry (file+headline (lambda () (concat org-directory "/" "WorkLogs.org")) "On-Deck") "** %(create-org-link 1) %?")
+        ("d" "Daily Review" entry (file+headline (lambda () (concat org-directory "/" "Personal_Reviews.org")) "Daily") "** %(create-org-link 1 \"Daily Review\") %?")
+        ("k" "Weekly Review" entry (file+headline (lambda () (concat org-directory "/" "Personal_Reviews.org")) "Weekly") "** %(create-org-link 1 \"Weekly Review\") %?")
+        ("s" "Start of Week Check-In" entry (file+headline (lambda () (concat org-directory "/" "Personal_Reviews.org")) "Weekly") "** %(create-org-link 1 \"Start of Week Check-In\") %?")
+        ("r" "Research Note" entry (file+headline (lambda () (concat org-directory "/" "ResearchNotes.org")) "In-Process") "** %(create-org-link nil) %?")
+        ("l" "Lessons Learned" entry (file+headline (lambda () (concat org-directory "/" "LessonsLearned.org")) "Drafts") "** %(create-org-link nil) %?")
+        ("m" "Meeting Minute" entry (file+headline (lambda () (concat org-directory "/" "MeetingMinutes.org")) "In-Process") "** %(create-org-link 1) %?")
+        ))
 #+END_SRC
 
 ** To-do Lists
@@ -258,15 +256,15 @@ of -> http://emacs.stackexchange.com/a/12166/8228
 
 ** Yasnippet
 #+BEGIN_SRC emacs-lisp
-  (defun yas/org-very-safe-expand ()
-    (let ((yas/fallback-behavior 'return-nil)) (yas/expand)))
+  ;; (defun yas/org-very-safe-expand ()
+  ;;   (let ((yas/fallback-behavior 'return-nil)) (yas/expand)))
 
-  (add-hook 'org-mode-hook
-            (lambda ()
-              (make-variable-buffer-local 'yas/trigger-key)
-              (setq yas/trigger-key [tab])
-              (add-to-list 'org-tab-first-hook 'yas/org-very-safe-expand)
-              (define-key yas/keymap [tab] 'yas/next-field)))
+  ;; (add-hook 'org-mode-hook
+  ;;           (lambda ()
+  ;;             (make-variable-buffer-local 'yas/trigger-key)
+  ;;             (setq yas/trigger-key [tab])
+  ;;             (add-to-list 'org-tab-first-hook 'yas/org-very-safe-expand)
+  ;;             (define-key yas/keymap [tab] 'yas/next-field)))
 #+END_SRC
 
 ** Babel
@@ -656,6 +654,10 @@ The killer feature here is using Swiper instead of incremental search when hitti
      (add-hook 'after-init-hook 'eos/core/load-persistent-scratch)
      (add-hook 'kill-emacs-hook 'eos/core/save-persistent-scratch)
    #+END_SRC
+** Showing All Open Buffers in the Mini-Buffer
+#+BEGIN_SRC emacs-lisp
+(define-key global-map (kbd "C-x b") 'helm-mini)
+#+END_SRC
 * Syncing
   I like to sync some of my files using Syncthing. The problem is when I do the following:
 
@@ -806,4 +808,17 @@ shell, so here's what I do instead.
         (interactive "p")
         (kmacro-exec-ring-item
          (quote ([67108896 5 134217847 1 102 102 109 112 101 103 32 45 105 32 34 5 34 32 45 97 98 32 51 50 48 107 32 45 109 97 112 95 109 101 116 97 100 97 116 97 32 48 32 45 105 100 118 backspace 51 118 50 95 118 101 114 115 105 111 110 32 51 32 34 25 backspace backspace backspace backspace 109 112 51 34 14 1] 0 "%d")) arg)))
+#+END_SRC
+
+* Registers
+** Org
+#+BEGIN_SRC emacs-lisp
+  (set-register ?w (cons 'file (concat org-directory "/WorkLogs.org")))
+  (set-register ?i (cons 'file (concat org-directory "/index.org")))
+  (set-register ?j (cons 'file (concat org-directory "/journal/" (format-time-string "%Y%m%d") ".org")))
+#+END_SRC
+** Misc
+#+BEGIN_SRC emacs-lisp
+  (set-register ?e (cons 'file "~/.doom.d/config.org"))
+  (set-register ?s (get-buffer "*scratch*"))
 #+END_SRC
