@@ -822,3 +822,15 @@ shell, so here's what I do instead.
   (set-register ?e (cons 'file "~/.doom.d/config.org"))
   (set-register ?s (get-buffer "*scratch*"))
 #+END_SRC
+* Shell Stuff
+** Eshell
+*** eshell-bookmark
+This is super helpful, especially when used with tramp to access things like
+remote servers or docker containers:
+
+#+BEGIN_SRC emacs-lisp
+(use-package eshell-bookmark
+  :after eshell
+  :config
+  (add-hook 'eshell-mode-hook #'eshell-bookmark-setup))
+#+END_SRC
