@@ -382,8 +382,22 @@ Here's the tags that I exclude from tag inheritance:
 * Zettelkasten
 ** org-roam
 #+BEGIN_SRC emacs-lisp
-(setq org-roam-directory (concat org-directory "/roam"))
+(use-package org-roam
+  :hook
+  (after-init . org-roam-mode)
+  :custom
+  (if (string= "poochie" (system-name))
+      (org-roam-directory "/home/tom/Pam-Syncthing-Org/roam")
+    (org-roam-directory "/home/tom/gtd/org/roam"))
+  :bind (:map org-roam-mode-map
+         (("C-c n l" . org-roam)
+          ("C-c n f" . org-roam-find-file)
+          ("C-c n g" . org-roam-graph))
+         :map org-mode-map
+         (("C-c n i" . org-roam-insert))
+         (("C-c n I" . org-roam-insert-immediate))))
 #+END_SRC
+
 * Magit
 ** SSH Stuff
 *** Linux
