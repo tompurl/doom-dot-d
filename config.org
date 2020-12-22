@@ -33,8 +33,7 @@
 #+BEGIN_SRC emacs-lisp
   (define-key global-map "\C-cl" 'org-store-link)
   (define-key global-map "\C-ca" 'org-agenda)
-  (global-set-key (kbd "<f4>") 'set-org-agenda-files)
-  (add-hook 'org-mode-hook
+    (add-hook 'org-mode-hook
             (lambda ()
               (local-set-key (kbd "<f5>") #'org-toggle-inline-images)
               (local-set-key (kbd "C-c n s") #'org-narrow-to-subtree)
@@ -86,19 +85,6 @@
         (forward-line -1))
     #+END_SRC
 ** Org-agenda
-*** Specify the files that can be used in an agenda
-
-#+BEGIN_SRC emacs-lisp
-  (defun set-org-agenda-files ()
-    (interactive)
-    (message "Saving all org buffers to keep agenda files list clean")
-    (setq org-agenda-files (list
-                            (concat org-directory "/" "RecurringTasks.org")
-                            (concat org-directory "/" "inbox.org")))
-    (message "Done setting org agenda files."))
-
-  (set-org-agenda-files)
-#+END_SRC
 *** Custom Views
 
 Here's my custom agenda view that uses "column view".
