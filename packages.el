@@ -32,6 +32,7 @@
 (package! yasnippet-snippets)
 (package! groovy-mode)
 (package! eshell-bookmark)
+(package! kubernetes)
 (package! powershell)
 
 ;; To install a package directly from a remote git repo, you must specify a
