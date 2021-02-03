@@ -604,6 +604,12 @@ Let's just turn it on for everything :smile:
     #+BEGIN_SRC emacs-lisp
       (show-paren-mode 1)
     #+END_SRC
+** REST
+*** Verb
+#+BEGIN_SRC emacs-lisp
+(with-eval-after-load 'org
+  (define-key org-mode-map (kbd "C-c C-r") verb-command-map))
+#+END_SRC
 * Text Search
 ** Swiper and Ivy
 
@@ -833,4 +839,9 @@ remote servers or docker containers:
   :after eshell
   :config
   (add-hook 'eshell-mode-hook #'eshell-bookmark-setup))
+#+END_SRC
+* RSS
+** Elfeed
+#+BEGIN_SRC emacs-lisp
+(setq rmh-elfeed-org-files (list "~/gtd/org/RSS_Feeds.org"))
 #+END_SRC
