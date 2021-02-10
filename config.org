@@ -7,7 +7,8 @@
 
 (setq doom-theme
       ;; 'doom-fairy-floss ;; Really nice purplish theme
-      'kaolin-valley-light ;; Nice, light theme that's a lot like solarized but more green'
+      ;; 'kaolin-valley-light ;; Nice, light theme that's a lot like solarized but more green'
+      'modus-operandi
       )
 (setq org-directory "~/gtd/org")
 (setq display-line-numbers-type t)
