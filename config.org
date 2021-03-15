@@ -530,9 +530,6 @@ Here's the tags that I exclude from tag inheritance:
     "Returns the current time with no delimiters."
     (interactive)
     (format-time-string current-time-format-no-delim (current-time)))
-
-  (global-set-key "\C-c\C-d" 'insert-current-date-time)
-  (global-set-key "\C-c\C-t" 'insert-current-time)
 #+END_SRC
 * Dev
 ** Misc
