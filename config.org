@@ -850,3 +850,33 @@ remote servers or docker containers:
 #+BEGIN_SRC emacs-lisp
 (setq rmh-elfeed-org-files (list "~/gtd/org/RSS_Feeds.org"))
 #+END_SRC
+* Email
+** m4ue
+#+BEGIN_SRC emacs-lisp
+(add-to-list 'load-path "/home/tom/.nix-profile/share/emacs/site-lisp/mu4e")
+(require 'mu4e)
+
+(setq mu4e-maildir "~/.mail"
+      mu4e-attachment-dir "~/Downloads")
+
+(setq mu4e-sent-folder   "/INBOX/Sent")
+(setq mu4e-drafts-folder "/INBOX/Drafts")
+(setq mu4e-refile-folder "/INBOX/Archive")
+(setq mu4e-trash-folder  "/INBOX/Trash")
+
+(#+setupfile: q user-mail-address "tom@tompurl.com"
+      user-full-name  "Tom Purl")
+
+;; Get mail
+(setq mu4e-get-mail-command "mbsync protonmail"
+      mu4e-change-filenames-when-moving t   ; needed for mbsync
+      mu4e-update-interval nil)
+
+;; Send mail
+(setq message-send-mail-function     'smtpmail-send-it
+      smtpmail-auth-credentials "~/.authinfo.gpg"
+      smtpmail-smtp-server "127.0.0.1"
+      smtpmail-smtp-service 1025)
+
+;; (add-to-list 'gnutls-trustfiles (expand-file-name "~/.config/protonmail/bridge/cert.pem"))
+#+END_SRC
