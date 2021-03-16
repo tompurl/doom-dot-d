@@ -178,7 +178,7 @@
        wgrep
 
        :email
-       ;;(mu4e +gmail)
+       mu4e
        ;;notmuch
        ;;(wanderlust +gmail)
 
