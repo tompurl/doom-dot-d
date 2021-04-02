@@ -773,6 +773,17 @@ section with =crypt=.
 (org-crypt-use-before-save-magic)
 (setq org-crypt-key "5BF5A514D04978DD")
 #+END_SRC
+** Authinfo File and Referencing Passwords
+I would like to reference passwords from files that *aren't* stored in version
+control. Here's an easy way to do that with an [[~/.authinfo.gpg]] file.
+
+I got this function from [[https://www.reddit.com/r/emacs/comments/kv2ziq/how_to_encrypt_your_passwords_with_emacs/][the following reddit discussion]].
+
+#+BEGIN_SRC emacs-lisp
+(defun tp/lookup-password (&rest keys)
+  (when-let ((result (apply #'auth-source-search keys)))
+    (funcall (plist-get (car result) :secret))))
+#+END_SRC
 
 * Bookmarks
    Since I run Emacs as a user service it is unceremoniously killed every time I
@@ -849,4 +860,12 @@ remote servers or docker containers:
 ** Elfeed
 #+BEGIN_SRC emacs-lisp
 (setq rmh-elfeed-org-files (list "~/gtd/org/RSS_Feeds.org"))
+#+END_SRC
+* Blogging
+The writefreely mode for Emacs makes it trivially easy to write blog posts.
+
+#+BEGIN_SRC emacs-lisp
+(use-package writefreely
+  :after org
+  :config (setq writefreely-auth-token (tp/lookup-password :host "write.as")))
 #+END_SRC
