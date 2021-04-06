@@ -861,11 +861,19 @@ remote servers or docker containers:
 #+BEGIN_SRC emacs-lisp
 (setq rmh-elfeed-org-files (list "~/gtd/org/RSS_Feeds.org"))
 #+END_SRC
-* Blogging
+* Writing
+** Blogging
 The writefreely mode for Emacs makes it trivially easy to write blog posts.
 
 #+BEGIN_SRC emacs-lisp
 (use-package writefreely
   :after org
   :config (setq writefreely-auth-token (tp/lookup-password :host "write.as")))
+#+END_SRC
+** Writer Words Goal
+I'm trying this out to see if it will improve the quality and quantity of my
+prose writing.
+
+#+BEGIN_SRC emacs-lisp
+(use-package wwg)
 #+END_SRC
