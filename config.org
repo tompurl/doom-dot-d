@@ -116,7 +116,8 @@ Here's my custom agenda view that uses "column view".
 This only shows today's tasks in the agenda view by default:
 
 #+BEGIN_SRC emacs-lisp
-  (setq org-agenda-span 1)
+(after! org
+  (setq org-agenda-span 1))
 #+END_SRC
 
 ** Org-Clock
