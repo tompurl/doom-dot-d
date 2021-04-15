@@ -113,11 +113,18 @@ Here's my custom agenda view that uses "column view".
           ))
 #+END_SRC
 
-This only shows today's tasks in the agenda view by default:
+For some strange reason Doom Emacs assumes that you always view the entire week
+when looking at your agenda. I only like to look at today, which means that I
+have to change a few of the defaults in their org module that I wouldn't have to
+change if I was using vanilla Emacs.
+
+Doom Emacs is still awesome and worth it, but dang, things like this can be
+annoying.
 
 #+BEGIN_SRC emacs-lisp
 (after! org
-  (setq org-agenda-span 1))
+  (setq org-agenda-span 1)
+  (setq org-agenda-start-day "today"))
 #+END_SRC
 
 ** Org-Clock
