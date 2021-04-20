@@ -892,22 +892,24 @@ prose writing.
 * Email
 ** mu4e / protonmail
 #+BEGIN_SRC emacs-lisp
-(add-to-list 'load-path "/home/tom/.nix-profile/share/emacs/site-lisp/mu4e")
-(add-to-list 'gnutls-trustfiles (expand-file-name "~/.config/protonmail/bridge/cert.pem"))
-(use-package mu4e
-  :custom
-  (gnutls-log-level 2)
-  (mu4e-attachment-dir "~/Downloads")
-  (mu4e-get-mail-command "mbsync protonmail")
-  (mu4e-sent-folder "/INBOX/Sent")
-  (mu4e-trash-folder "/INBOX/Trash")
-  (mu4e-drafts-folder "/INBOX/Drafts")
-  (mu4e-refile-folder "/INBOX/Archive")
-  (mu4e-change-filenames-when-moving t)   ; needed for mbsync
-  (message-send-mail-function 'smtpmail-send-it)
-  (smtpmail-auth-credentials "~/.authinfo.gpg")
-  (smtpmail-smtp-server "127.0.0.1")
-  ;; (smtpmail-stream-type 'starttls)
-  (smtpmail-smtp-service 1025)
-  )
+(if (string= "poochie" (system-name)
+             (add-to-list 'load-path "/home/tom/.nix-profile/share/emacs/site-lisp/mu4e")
+             (add-to-list 'gnutls-trustfiles (expand-file-name "~/.config/protonmail/bridge/cert.pem"))
+             (use-package mu4e
+               :custom
+               (gnutls-log-level 2)
+               (mu4e-attachment-dir "~/Downloads")
+               (mu4e-get-mail-command "mbsync protonmail")
+               (mu4e-sent-folder "/INBOX/Sent")
+               (mu4e-trash-folder "/INBOX/Trash")
+               (mu4e-drafts-folder "/INBOX/Drafts")
+               (mu4e-refile-folder "/INBOX/Archive")
+               (mu4e-change-filenames-when-moving t)   ; needed for mbsync
+               (message-send-mail-function 'smtpmail-send-it)
+               (smtpmail-auth-credentials "~/.authinfo.gpg")
+               (smtpmail-smtp-server "127.0.0.1")
+               ;; (smtpmail-stream-type 'starttls)
+               (smtpmail-smtp-service 1025)
+               )
+             )
 #+END_SRC
