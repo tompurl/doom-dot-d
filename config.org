@@ -28,7 +28,11 @@
 #+BEGIN_SRC emacs-lisp
 (setq +doom-dashboard-banner-dir "/home/tom/.doom.d/banners")
 #+END_SRC
-
+** Nyan Cat
+Adds the Nyan Cat to your modeline 😺😺😽😽
+#+BEGIN_SRC emacs-lisp
+(use-package nyan-mode)
+#+END_SRC
 * ORG !!!
 ** Keymaps
 #+BEGIN_SRC emacs-lisp
