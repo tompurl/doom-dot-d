@@ -119,6 +119,11 @@ Here's my custom agenda view that uses "column view".
          (:name "Scheduled earlier"
                 :scheduled past)))
 (org-agenda-list)
+  (setq org-agenda-prefix-format
+        '((agenda . " %i %-12:c%?-12t%-6e% s")
+          (todo . " %i %-12:c")
+          (tags . " %i %-12:c")
+          (search . " %i %-12:c")))
 #+END_SRC
 
 For some strange reason Doom Emacs assumes that you always view the entire week
