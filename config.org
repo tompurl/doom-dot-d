@@ -399,6 +399,20 @@ Here's the tags that I exclude from tag inheritance:
                   "STORY_NUM"
                   "ORDERED"))
     #+END_SRC
+** Priorities
+Let's make it A-E and make them looks cool.
+#+BEGIN_SRC emacs-lisp
+(after! org (setq org-highest-priority ?A
+                  org-lowest-priority ?E
+                  org-default-priority ?C)
+  (setq org-fancy-priorities-list '((?A . "❗")
+                                    (?B . "⬆")
+                                    (?C . "⬇")
+                                    (?D . "☕")
+                                    (?E . "😴"))))
+
+
+#+END_SRC
 * Zettelkasten
 ** org-roam
 #+BEGIN_SRC emacs-lisp
