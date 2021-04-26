@@ -95,36 +95,37 @@ Adds the Nyan Cat to your modeline 😺😺😽😽
 Here's my custom agenda view that uses "column view".
 
 #+BEGIN_SRC emacs-lisp
-(setq org-super-agenda-mode 't)
+(after! org
+  (setq org-super-agenda-mode 't)
 
-(setq org-super-agenda-groups
-       '((:log t)  ; Automatically named "Log"
-         (:name "Schedule"
-                :time-grid t)
-         (:name "Today"
-                :scheduled today)
-         (:habit t)
-         (:name "Due today"
-                :deadline today)
-         (:name "Overdue"
-                :deadline past)
-         (:name "Due soon"
-                :deadline future)
-         (:name "Unimportant"
-                :todo ("SOMEDAY" "MAYBE" "CHECK" "TO-READ" "TO-WATCH")
-                :order 100)
-         (:name "Waiting..."
-                :todo "WAITING"
-                :order 98)
-         (:name "Scheduled earlier"
-                :scheduled past)))
-(org-agenda-list)
+  (setq org-super-agenda-groups
+        '((:log t)  ; Automatically named "Log"
+          (:name "Schedule"
+           :time-grid t)
+          (:name "Today"
+           :scheduled today)
+          (:habit t)
+          (:name "Due today"
+           :deadline today)
+          (:name "Overdue"
+           :deadline past)
+          (:name "Due soon"
+           :deadline future)
+          (:name "Unimportant"
+           :todo ("SOMEDAY" "MAYBE" "CHECK" "TO-READ" "TO-WATCH")
+           :order 100)
+          (:name "Waiting..."
+           :todo "WAITING"
+           :order 98)
+          (:name "Scheduled earlier"
+           :scheduled past)))
+  (org-agenda-list)
 
-(setq org-agenda-prefix-format
+  (setq org-agenda-prefix-format
         '((agenda . " %i %-12:c%?-12t%-6e% s")
           (todo . " %i %-12:c")
           (tags . " %i %-12:c")
-          (search . " %i %-12:c")))
+          (search . " %i %-12:c"))))
 #+END_SRC
 
 For some strange reason Doom Emacs assumes that you always view the entire week
