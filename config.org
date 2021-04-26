@@ -340,9 +340,10 @@ block (unless it's overrided at a lower lever of course).
 ** Tags
 These are the tags that I will use the most when creating new tasks.
 
+
 #+BEGIN_SRC emacs-lisp
   (cond
-   ((string-equal system-type "windows-nt")
+   ((not (string= "poochie" (system-name)))
     (progn
       ;; Work-related tags
       (setq org-tag-alist '(
@@ -361,7 +362,7 @@ These are the tags that I will use the most when creating new tasks.
                             ("c_agile_process_stuff" . ?s)
                             ("today" . ?t)
                             ("c_system_maintenance" . ?z)))))
-   ((string-equal system-type "gnu/linux")
+   ((string= "poochie" (system-name))
     (progn
       (setq org-tag-alist '(
                             ("c_bills" . ?b)
