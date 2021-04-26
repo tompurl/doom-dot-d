@@ -95,26 +95,37 @@ Adds the Nyan Cat to your modeline 😺😺😽😽
 Here's my custom agenda view that uses "column view".
 
 #+BEGIN_SRC emacs-lisp
-  (setq org-agenda-overriding-columns-format
-        "%TODO %4PRIORITY(Pri.) %50ITEM(Task) %4POM_Estimate(Est.) %7POM_Pomodori(Poms) %12CLOCKSUM_T(Today's Time)")
-  (setq org-agenda-view-columns-initially t)
-  (setq org-agenda-custom-commands
-        '(("p" "Pomodoro View"
-           ((tags "+today")))
-          ("c" "Daily Checklist"
-           ((org-ql-block '(and (todo)
-                                (tags "daily_checklist")
-                                (scheduled :to today))
-                          ((org-ql-block-header "Daily Checklist")))))
-          ("A" "Remaining Agenda"
-           ((org-ql-block '(and (todo "TODO")
-                                (not (or (tags "today")
-                                         (tags "daily_checklist")))
-                                (or
-                                 (scheduled :to today)
-                                 (deadline auto)))
-                          ((org-ql-block-header "Remaining Agenda")))))
-          ))
+(after! org
+  (setq org-super-agenda-mode 't)
+
+  (setq org-super-agenda-groups
+        '((:log t)  ; Automatically named "Log"
+          (:name "Schedule"
+           :time-grid t)
+          (:name "Today"
+           :scheduled today)
+          (:habit t)
+          (:name "Due today"
+           :deadline today)
+          (:name "Overdue"
+           :deadline past)
+          (:name "Due soon"
+           :deadline future)
+          (:name "Unimportant"
+           :todo ("SOMEDAY" "MAYBE" "CHECK" "TO-READ" "TO-WATCH")
+           :order 100)
+          (:name "Waiting..."
+           :todo "WAITING"
+           :order 98)
+          (:name "Scheduled earlier"
+           :scheduled past)))
+  (org-agenda-list)
+
+  (setq org-agenda-prefix-format
+        '((agenda . " %i %-12:c%?-12t%-6e% s")
+          (todo . " %i %-12:c")
+          (tags . " %i %-12:c")
+          (search . " %i %-12:c"))))
 #+END_SRC
 
 For some strange reason Doom Emacs assumes that you always view the entire week
