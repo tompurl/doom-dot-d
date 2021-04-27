@@ -176,8 +176,9 @@ annoying.
 *** Workflow States
 
 #+BEGIN_SRC emacs-lisp
+(after! org
   (setq org-todo-keywords
-        '((sequence "TODO(t)" "WAIT(w@/!)" "|" "DONE(d!)" "CANCELED(c@)")))
+        '((sequence "TODO(t)" "WAIT(w@)" "|" "DONE(d@)" "CANCELED(c@)"))))
 #+END_SRC
 
 I'd also like to move transition logging to a drawer to keep things from getting
