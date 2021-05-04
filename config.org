@@ -95,9 +95,10 @@ Adds the Nyan Cat to your modeline 😺😺😽😽
 Here's my custom agenda view that uses "column view".
 
 #+BEGIN_SRC emacs-lisp
-(after! org
-  (setq org-super-agenda-mode 't)
-
+(use-package! org-super-agenda
+  :config
+  (org-super-agenda-mode)
+  :init
   (setq org-super-agenda-groups
         '((:log t)  ; Automatically named "Log"
           (:name "Schedule"
@@ -118,14 +119,13 @@ Here's my custom agenda view that uses "column view".
            :todo "WAITING"
            :order 98)
           (:name "Scheduled earlier"
-           :scheduled past)))
-  (org-agenda-list)
-
-  (setq org-agenda-prefix-format
+           :scheduled past))
+        org-agenda-prefix-format
         '((agenda . " %i %-12:c%?-12t%-6e% s")
           (todo . " %i %-12:c")
           (tags . " %i %-12:c")
-          (search . " %i %-12:c"))))
+          (search . " %i %-12:c")))
+  (org-agenda-list))
 #+END_SRC
 
 For some strange reason Doom Emacs assumes that you always view the entire week
@@ -176,9 +176,9 @@ annoying.
 *** Workflow States
 
 #+BEGIN_SRC emacs-lisp
-(after! org
-  (setq org-todo-keywords
-        '((sequence "TODO(t)" "WAIT(w@)" "|" "DONE(d@)" "CANCELED(c@)"))))
+;; (after! org
+;;   (setq org-todo-keywords
+;;         '((sequence "TODO(t)" "WAIT(w@)" "|" "DONE(d!)" "CANCELED(c@)"))))
 #+END_SRC
 
 I'd also like to move transition logging to a drawer to keep things from getting
@@ -406,15 +406,10 @@ Let's make it A-E and make them looks cool.
 #+BEGIN_SRC emacs-lisp
 (after! org (setq org-highest-priority ?A
                   org-lowest-priority ?E
-                  org-default-priority ?C)
-  (setq org-fancy-priorities-list '((?A . "❗")
-                                    (?B . "⬆")
-                                    (?C . "⬇")
-                                    (?D . "☕")
-                                    (?E . "😴"))))
-
-
+                  org-default-priority ?C
+                  org-fancy-priorities-mode nil))
 #+END_SRC
+
 * Zettelkasten
 ** org-roam
 #+BEGIN_SRC emacs-lisp
