@@ -148,7 +148,8 @@ persist between sessions. Apparently I'm in a very small minority :-)
 - https://www.reddit.com/r/emacs/comments/nfb519/how_to_update_orgagendafiles_and_persist_between/gykk9hh?utm_source=share&utm_medium=web2x&context=3
 
 #+BEGIN_SRC emacs-lisp
-(add-to-list 'savehist-additional-variables 'org-agenda-files)
+(after! savehist
+  (add-to-list 'savehist-additional-variables 'org-agenda-files))
 #+END_SRC
 
 ** Org-Clock
