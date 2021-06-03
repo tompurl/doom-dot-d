@@ -420,7 +420,7 @@ Let's make it A-E and make them looks cool.
                   org-fancy-priorities-mode nil))
 #+END_SRC
 
-* Zettelkasten
+* Zettelkasten / Note Taking / PKM
 ** org-roam
 #+BEGIN_SRC emacs-lisp
 (use-package org-roam
@@ -438,7 +438,14 @@ Let's make it A-E and make them looks cool.
          (("C-c n i" . org-roam-insert))
          (("C-c n I" . org-roam-insert-immediate))))
 #+END_SRC
+** org-web-tools
+This is a fantastic plugin that makes it easy to copy things from the web into
+=org-mode= docs. This is especially useful when I want to store an offline copy
+of a web page and then annotate it in =org-roam=.
 
+#+BEGIN_SRC emacs-lisp
+(require 'org-web-tools)
+#+END_SRC
 * Magit
 ** SSH Stuff
 *** Linux
