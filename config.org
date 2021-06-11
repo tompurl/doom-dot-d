@@ -446,6 +446,24 @@ of a web page and then annotate it in =org-roam=.
 #+BEGIN_SRC emacs-lisp
 (require 'org-web-tools)
 #+END_SRC
+** Daily Journal
+The best place I've found for storing *fleeting notes* that I can easily access
+and update on my laptop and phone is my Nextcloud Notes instance.
+
+This function automatically jumps to today's journal file and creates it if
+necessary.
+
+#+BEGIN_SRC emacs-lisp
+(defun tp/roam/goto-today-journal-entry ()
+  "Open a journal entry as a markdown file with today's datestamp."
+  (interactive)
+  (find-file (concat "~/Nextcloud/Notes/"
+                     (format-time-string org-link-date-stamp-format (current-time))
+                     ".md")))
+
+
+#+END_SRC
+
 * Magit
 ** SSH Stuff
 *** Linux
