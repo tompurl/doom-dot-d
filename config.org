@@ -935,6 +935,11 @@ remote servers or docker containers:
   :config
   (add-hook 'eshell-mode-hook #'eshell-bookmark-setup))
 #+END_SRC
+*** Aliases
+#+BEGIN_SRC emacs-lisp
+(defalias 'ff 'find-file)
+#+END_SRC
+
 * RSS
 ** Elfeed
 #+BEGIN_SRC emacs-lisp
