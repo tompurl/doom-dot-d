@@ -13,7 +13,6 @@
 (package! presentation)
 (package! org-ql)
 (package! ox-gfm)
-(package! org-roam)
 (package! exec-path-from-shell)
 (package! powershell-mode)
 (package! robot-mode)

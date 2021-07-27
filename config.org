@@ -423,7 +423,7 @@ Let's make it A-E and make them looks cool.
 * Zettelkasten / Note Taking / PKM
 ** org-roam
 #+BEGIN_SRC emacs-lisp
-(use-package org-roam
+(use-package! org-roam
   :hook
   (after-init . org-roam-mode)
   :custom
