@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: for-loop
+# uuid:
+# key: for
+# condition: t
+# --
+for f in ${1:*} { ${2:echo} "$f"; $3} $0
