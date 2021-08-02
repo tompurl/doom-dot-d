@@ -489,7 +489,7 @@ of a web page and then annotate it in =org-roam=.
 #+BEGIN_SRC emacs-lisp
 (require 'org-web-tools)
 #+END_SRC
-** Daily Journal
+** Fleeting Notes
 The best place I've found for storing *fleeting notes* that I can easily access
 and update on my laptop and phone is my Nextcloud Notes instance.
 
@@ -505,6 +505,15 @@ necessary.
                      ".md")))
 
 
+#+END_SRC
+** Private Journal
+I don't like writing long-form or encrypted notes using markdown. I prefer org formatting and all of the awesome features that come with it. So for that I use =org-journal=.
+
+#+BEGIN_SRC emacs-lisp
+(use-package! org-journal
+  :hook (prog-mode . org-journal-mode)
+  :config
+  (setq org-journal-file-format "%Y%m%d.org"))
 #+END_SRC
 
 * Magit
