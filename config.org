@@ -727,10 +727,6 @@ Turn them off by default
    (add-hook 'robot-mode-hook
              (lambda () (local-set-key (kbd "<f5>") #'robot-mode-find-kw)))
  #+END_SRC
-*** Hiding =^M= Characters In Robot Files
- #+BEGIN_SRC emacs-lisp
-   (add-hook 'robot-mode-hook 'tp/file/remove-dos-eol)
- #+END_SRC
 ** Lisp
 *** Paredit
 
