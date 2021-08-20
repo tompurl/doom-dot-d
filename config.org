@@ -29,13 +29,7 @@ The following customizations are from https://zzamboni.org/post/beautifying-org-
 (after! org
   (setq org-hide-emphasis-markers t)
 
-  (let* ((variable-tuple
-          (cond ((x-list-fonts "ETBembo")         '(:font "ETBembo"))
-                ((x-list-fonts "Source Sans Pro") '(:font "Source Sans Pro"))
-                ((x-list-fonts "Lucida Grande")   '(:font "Lucida Grande"))
-                ((x-list-fonts "Verdana")         '(:font "Verdana"))
-                ((x-family-fonts "Sans Serif")    '(:family "Sans Serif"))
-                (nil (warn "Cannot find a Sans Serif Font.  Install Source Sans Pro."))))
+  (let* ((variable-tuple     '(:font "ETBembo"))
          (base-font-color     (face-foreground 'default nil 'default))
          (headline           `(:inherit default :weight bold :foreground ,base-font-color)))
 
@@ -522,11 +516,6 @@ I don't like writing long-form or encrypted notes using markdown. I prefer org f
 
 (use-package! org-roam-ui
     :after org-roam ;; or :after org
-    :hook
-;;         normally we'd recommend hooking orui after org-roam, but since org-roam does not have
-;;         a hookable mode anymore, you're advised to pick something yourself
-;;         if you don't care about startup time, use
-;;  :hook (after-init . org-roam-ui-mode)
     :config
     (setq org-roam-ui-sync-theme t
           org-roam-ui-follow t
@@ -952,7 +941,7 @@ I got this function from [[https://www.reddit.com/r/emacs/comments/kv2ziq/how_to
 (defun my-nov-font-setup ()
   (face-remap-add-relative 'variable-pitch
                            :family "ETBembo"
-                           :size 220))
+                           :size 14))
 (add-hook 'nov-mode-hook 'my-nov-font-setup)
 #+END_SRC
 
