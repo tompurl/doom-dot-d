@@ -471,7 +471,7 @@ Let's make it A-E and make them looks cool.
   (after-init . org-roam-mode)
   :custom
   (if (string= "poochie" (system-name))
-      (org-roam-directory "~/Dropbox/TomsDocs/org/roam/")
+      (org-roam-directory "~/Nextcloud/Documents/org/roam/")
     (org-roam-directory "/home/tom/gtd/org/roam"))
   :bind (:map org-roam-mode-map
          (("C-c n l" . org-roam)
