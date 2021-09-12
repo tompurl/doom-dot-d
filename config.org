@@ -506,16 +506,6 @@ necessary.
 
 
 #+END_SRC
-** Private Journal
-I don't like writing long-form or encrypted notes using markdown. I prefer org formatting and all of the awesome features that come with it. So for that I use =org-journal=.
-
-#+BEGIN_SRC emacs-lisp
-(use-package! org-journal
-  :hook (prog-mode . org-journal-mode)
-  :config
-  (setq org-journal-file-format "%Y%m%d.org"))
-#+END_SRC
-
 * Magit
 ** SSH Stuff
 *** Linux
