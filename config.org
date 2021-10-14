@@ -482,6 +482,23 @@ Let's make it A-E and make them looks cool.
          (("C-c n i" . org-roam-insert))
          (("C-c n I" . org-roam-insert-immediate))))
 #+END_SRC
+** org-roam-ui
+#+BEGIN_SRC emacs-lisp
+(use-package! websocket
+    :after org-roam)
+
+(use-package! org-roam-ui
+    :after org-roam ;; or :after org
+;;         normally we'd recommend hooking orui after org-roam, but since org-roam does not have
+;;         a hookable mode anymore, you're advised to pick something yourself
+;;         if you don't care about startup time, use
+;;  :hook (after-init . org-roam-ui-mode)
+    :config
+    (setq org-roam-ui-sync-theme t
+          org-roam-ui-follow t
+          org-roam-ui-update-on-save t
+          org-roam-ui-open-on-start t))
+#+END_SRC
 ** org-web-tools
 This is a fantastic plugin that makes it easy to copy things from the web into
 =org-mode= docs. This is especially useful when I want to store an offline copy
