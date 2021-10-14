@@ -7,8 +7,8 @@
 
 (setq doom-theme
       ;; 'doom-fairy-floss ;; Really nice purplish theme
-      ;; 'kaolin-valley-light ;; Nice, light theme that's a lot like solarized but more green'
-      'modus-operandi
+      'kaolin-valley-light ;; Nice, light theme that's a lot like solarized but more green'
+      ;; 'modus-operandi   ;; By far the most accessible theme but a little boring
       )
 (setq org-directory "~/gtd/org")
 (setq display-line-numbers-type t)
@@ -74,8 +74,9 @@ The following customizations are from https://zzamboni.org/post/beautifying-org-
 ** Nyan Cat
 Adds the Nyan Cat to your modeline 😺😺😽😽
 #+BEGIN_SRC emacs-lisp
-(use-package nyan-mode)
+(use-package! nyan-mode)
 #+END_SRC
+
 * ORG !!!
 ** Keymaps
 #+BEGIN_SRC emacs-lisp
@@ -725,6 +726,16 @@ Let's just turn it on for everything :smile:
 (with-eval-after-load 'org
   (define-key org-mode-map (kbd "C-c C-r") verb-command-map))
 #+END_SRC
+** Kubernetes
+AKA K8S :-)
+*** YAML-Related Stuff
+I have to do a few funny things to my YAML config to make it work with all of my k8s-related things:
+
+#+BEGIN_SRC emacs-lisp
+(use-package! yaml-mode
+  :mode "\\.yaml.gotmpl$")
+#+END_SRC
+
 * Text Search
 ** Swiper and Ivy
 
@@ -1023,4 +1034,18 @@ prose writing.
     (smtpmail-smtp-service 1025)
     )
   )
+#+END_SRC
+* Tabs
+Let's try this out.
+
+#+BEGIN_SRC emacs-lisp :exports code-or-both
+(use-package! centaur-tabs
+  :demand
+  :config
+  (centaur-tabs-mode t)
+  :bind
+  ("C-<prior>" . centaur-tabs-backward)
+  ("C-<next>" . centaur-tabs-forward))
+
+
 #+END_SRC
