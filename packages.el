@@ -33,7 +33,7 @@
 (package! eshell-bookmark)
 (package! kubernetes)
 (package! powershell)
-(package! xahk-mode)
+;;(package! xahk-mode)
 (package! verb)
 (package! jq-mode)
 (package! modus-themes)
