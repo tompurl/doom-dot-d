@@ -21,7 +21,7 @@
 (package! helm-org-rifle)
 (package! dired-rsync)
 (package! try)
-(package! nov)
+;; (package! nov)
 (package! org-noter)
 (package! bongo)   ;; media player
 (package! ag)
@@ -45,6 +45,7 @@
 (package! pipenv)
 (package! feature-mode)
 (package! deadgrep)
+(package! rg)
 
 
 ;; To install a package directly from a remote git repo, you must specify a
