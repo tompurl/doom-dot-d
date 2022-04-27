@@ -7,12 +7,14 @@
 
 (setq doom-theme
       ;; 'doom-fairy-floss ;; Really nice purplish theme
-      'kaolin-valley-light ;; Nice, light theme that's a lot like solarized but more green'
-      ;; 'modus-operandi   ;; By far the most accessible theme but a little boring
+      ;; 'kaolin-valley-light
+      ;; Nice, light theme that's a lot like solarized but more green'
+      'modus-operandi   ;; By far the most accessible theme but a little boring
       )
 (setq org-directory "~/gtd/org")
 (setq display-line-numbers-type t)
 #+END_SRC
+
 * Eye Candy
 ** Fonts
 #+BEGIN_SRC emacs-lisp
