@@ -737,6 +737,15 @@ I have to do a few funny things to my YAML config to make it work with all of my
 (use-package! yaml-mode
   :mode "\\.yaml.gotmpl$")
 #+END_SRC
+** Python
+Wow, my Emacs is currently configured as a very sophisticated Python IDE, and I haven't even had to configure anything in this file yet :-) But I think I have configure =lsp-treemacs= here:
+
+#+BEGIN_SRC emacs-lisp
+(use-package! lsp-treemacs
+  :after lsp)
+#+END_SRC
+
+#+RESULTS:
 
 * Text Search
 ** Swiper and Ivy

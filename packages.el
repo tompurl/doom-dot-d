@@ -46,6 +46,7 @@
 (package! feature-mode)
 (package! deadgrep)
 (package! rg)
+(package! lsp-treemacs)
 
 
 ;; To install a package directly from a remote git repo, you must specify a
