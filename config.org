@@ -368,6 +368,7 @@ Here's the languages that I can interpret. Note that there's a difference betwee
            (shell . t)
            (python . t)
            (dot . t)
+           (restclient . t)
            (plantuml . t))))))
 #+END_SRC
 
