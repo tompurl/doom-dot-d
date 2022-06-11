@@ -142,6 +142,7 @@ Here's my custom agenda view that uses "column view".
 
 #+BEGIN_SRC emacs-lisp
 (use-package! org-super-agenda
+  :after org-agenda
   :config
   (org-super-agenda-mode)
   :init
@@ -170,8 +171,7 @@ Here's my custom agenda view that uses "column view".
         '((agenda . " %i %-12:c%?-12t%-6e% s")
           (todo . " %i %-12:c")
           (tags . " %i %-12:c")
-          (search . " %i %-12:c")))
-  (org-agenda-list))
+          (search . " %i %-12:c"))))
 #+END_SRC
 
 For some strange reason Doom Emacs assumes that you always view the entire week
